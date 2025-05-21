@@ -44,13 +44,11 @@ int main(int argc, char *argv[]) {
   viewSurface.Paint();
   viewSurface.SaveAs("surface.png");
 
-#if 0
-  // render volume (NOT SUPPORTED BY VISKORES)
+  // render volume
   viskores::rendering::View3D viewVolume(
       scene, viskores::rendering::MapperVolume(), canvas, camera, bg);
   viewVolume.Paint();
   viewVolume.SaveAs("volume.png");
-#endif
   
   return 0;
 }
