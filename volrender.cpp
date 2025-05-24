@@ -22,7 +22,12 @@ int main(int argc, char *argv[]) {
   camera.SetClippingRange(1.f, 10.f);
   camera.SetFieldOfView(60.f);
   camera.SetPosition(viskores::Vec3f_32(1.5, 1.5, 1.5));
+
+  // Set up color table and opacity
   viskores::cont::ColorTable colorTable("inferno");
+  colorTable.AddPointAlpha(0., 0.);
+  colorTable.AddPointAlpha(0.5, 0.2);
+  colorTable.AddPointAlpha(1.0, 0.2);
 
   // Set up Actor
   viskores::rendering::Actor actor(amrDataSet, fieldName, fieldName, colorTable);
