@@ -13,10 +13,7 @@
 
 int main(int argc, char *argv[]) {
   viskores::cont::Initialize(argc, argv, viskores::cont::InitializeOptions::Strict);
-  auto [derivedDataSet, fieldName] = getPhysicsCodeProxyData();
-
-  viskores::cont::DataSet mergedData =
-      viskores::cont::MergePartitionedDataSet(derivedDataSet);
+  auto [amrDataSet, fieldName] = getPhysicsCodeProxyData();
 
   // Set up a camera for rendering the input data
   viskores::rendering::Camera camera;
@@ -28,9 +25,7 @@ int main(int argc, char *argv[]) {
   viskores::cont::ColorTable colorTable("inferno");
 
   // Set up Actor
-  viskores::rendering::Actor actor(mergedData.GetCellSet(),
-                                   mergedData.GetCoordinateSystem(),
-                                   mergedData.GetField(fieldName), colorTable);
+  viskores::rendering::Actor actor(amrDataSet, fieldName, fieldName, colorTable);
   viskores::rendering::Scene scene;
   scene.AddActor(actor);
 
@@ -38,17 +33,21 @@ int main(int argc, char *argv[]) {
   viskores::rendering::Color bg(0.2f, 0.2f, 0.2f, 1.0f);
   viskores::rendering::CanvasRayTracer canvas(1024, 1024);
 
-  // render surface
-  viskores::rendering::View3D viewSurface(
-      scene, viskores::rendering::MapperRayTracer(), canvas, camera, bg);
-  viewSurface.Paint();
-  viewSurface.SaveAs("surface.png");
-
   // render volume
-  viskores::rendering::View3D viewVolume(
-      scene, viskores::rendering::MapperVolume(), canvas, camera, bg);
-  viewVolume.Paint();
-  viewVolume.SaveAs("volume.png");
-  
+  {
+    viskores::rendering::View3D viewVolume(
+        scene, viskores::rendering::MapperVolume(), canvas, camera, bg);
+    viewVolume.Paint();
+    viewVolume.SaveAs("volume.png");
+  }
+
+  // render surface
+  {
+    viskores::rendering::View3D viewSurface(
+        scene, viskores::rendering::MapperRayTracer(), canvas, camera, bg);
+    viewSurface.Paint();
+    viewSurface.SaveAs("surface.png");
+  }
+
   return 0;
 }
